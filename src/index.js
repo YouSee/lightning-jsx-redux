@@ -1,3 +1,4 @@
+import "./initializeRedux";
 import MyApp from "./App.js";
 
 const options = {

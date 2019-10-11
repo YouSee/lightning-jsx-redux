@@ -1,0 +1,65 @@
+import { connect } from "../redux";
+
+const textComponent = (state, actions, mapState) => (
+  <MyText
+    x={110}
+    y={110}
+    text={{
+      fontSize: 24,
+      text: state.currentKey,
+      fontStyle: "bold",
+      textColor: 0xff636efb,
+      shadow: true,
+      shadowColor: 0xff636efb,
+      shadowOffsetX: 2,
+      shadowOffsetY: 2,
+      shadowBlur: 2
+    }}
+    mapState={mapState}
+    updated={(newState, oldState) => {
+      if (newState.currentKey === 75) {
+        // keystroke K
+        actions.sendKey("WUUUH! K AS IN KENNETH");
+        return {};
+      }
+      return {
+        MyText: {
+          text: {
+            text: `new: ${newState.currentKey} old: ${oldState.currentKey}`
+          }
+        }
+      };
+    }}
+  >
+    <MyText
+      x={40}
+      y={40}
+      text={{
+        fontSize: 24,
+        text: `I am a child with: ${state.currentKey}`,
+        fontStyle: "bold",
+        textColor: 0xff636efb,
+        shadow: true,
+        shadowColor: 0xff636efb,
+        shadowOffsetX: 2,
+        shadowOffsetY: 2,
+        shadowBlur: 2
+      }}
+      mapState={mapState}
+      updated={(newState, oldState) => {
+        return {
+          MyText: {
+            text: {
+              text: `I am a child with: ${newState.currentKey}`
+            }
+          }
+        };
+      }}
+    ></MyText>
+  </MyText>
+);
+
+export default connect(
+  state => ({ currentKey: state.currentKey }),
+  { sendKey: key => ({ type: "NEW_KEY", key: key }) }
+)(textComponent);

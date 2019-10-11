@@ -14,7 +14,7 @@ export function provide(store) {
 
 export const createValueStore = (key, options, value) => (key, options, value);
 
-export const createConnectedLightningClass = (key, options, value) => {
+window.createConnectedLightningClass = (key, options, value) => {
   class connectedClass extends lng.Component {
     static _template() {
       const myObject = {

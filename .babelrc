@@ -1,7 +1,7 @@
 {
   "plugins": [
     ["./src/plugin/babel-transform", {
-      "pragma": "createConnectedLightningClass"
+      "pragma": "window.createConnectedLightningClass"
     }]
   ]
 }
