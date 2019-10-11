@@ -57,7 +57,7 @@ const myConnectedComponent = (state, actions, mapState) => (
       y={40}
       text={{
         fontSize: 24,
-        text: `new text: ${state.currentKey}`,
+        text: `I am a child with: ${state.currentKey}`,
         fontStyle: "bold",
         textColor: 0xff636efb,
         shadow: true,
@@ -65,6 +65,16 @@ const myConnectedComponent = (state, actions, mapState) => (
         shadowOffsetX: 2,
         shadowOffsetY: 2,
         shadowBlur: 2
+      }}
+      mapState={mapState}
+      updated={(newState, oldState) => {
+        return {
+          MyText: {
+            text: {
+              text: `I am a child with: ${newState.currentKey}`
+            }
+          }
+        };
       }}
     ></MyText>
   </MyText>

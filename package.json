@@ -2,7 +2,6 @@
   "author": "Rene Gustafson",
   "name": "functional-lightning",
   "dependencies": {
-    "js-redux": "^1.0.3",
     "redux": "^4.0.4",
     "webpack": "^4.41.0",
     "wpe-lightning": "git+https://github.com/WebPlatformForEmbedded/Lightning.git",

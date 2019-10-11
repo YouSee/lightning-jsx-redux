@@ -1,6 +1,5 @@
 import * as helpers from "./helpers";
 import { observeStore, wrapActionCreators } from "./helpers";
-import isClass from "is-class";
 
 let currentStore;
 
