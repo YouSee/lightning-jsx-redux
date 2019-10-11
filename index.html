@@ -2,14 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
+    <script src="./node_modules/wpe-lightning/dist/lightning-web.js"></script>
 </head>
 <body>
-<script type="module">
-    import DevLauncher from "./node_modules/wpe-lightning-sdk/DevLauncher.js";
-    import App from "./src/App.js";
-
-    const launcher = new DevLauncher();
-    launcher.launch(App, {}, {useInspector: false})
+<script defer src="./dist/bundle.js">
 </script>
 </body>
 </html>

@@ -1,11 +1,23 @@
 {
-  "author": "Metrological, Bas van Meurs <b.van.meurs@metrological.com>",
-  "name": "Lightning-SDK-blueprint",
+  "author": "Rene Gustafson",
+  "name": "functional-lightning",
   "dependencies": {
+    "js-redux": "^1.0.3",
+    "redux": "^4.0.4",
+    "webpack": "^4.41.0",
+    "wpe-lightning": "git+https://github.com/WebPlatformForEmbedded/Lightning.git",
     "wpe-lightning-sdk": "https://github.com/WebPlatformForEmbedded/Lightning-SDK.git"
   },
   "scripts": {
+    "start": "wp --config webpack.config.js",
     "release-web": "node ./node_modules/wpe-lightning-sdk/scripts/release-web.js",
     "release-mpkg": "node ./node_modules/wpe-lightning-sdk/scripts/release-mpkg.js"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.6.2",
+    "@babel/plugin-transform-react-jsx": "^7.3.0",
+    "@babel/preset-env": "^7.6.2",
+    "babel-loader": "^8.0.6",
+    "webpack-nano": "^0.8.1"
   }
 }
