@@ -12,42 +12,42 @@ export function provide(store) {
   currentStore = store;
 }
 
-export const createValueStore = (key, options, value) => (key, options, value);
+export function initializeConnectedLightning() {
+  document._createConnectedLightningClass = (key, options, value) => {
+    class connectedClass extends lng.Component {
+      static _template() {
+        const myObject = {
+          [key]: {
+            ...options,
+            ...(typeof value === "function" ? { Child: { type: value } } : []),
+            updated: undefined,
+            mapState: undefined
+          }
+        };
+        return myObject;
+      }
 
-window.createConnectedLightningClass = (key, options, value) => {
-  class connectedClass extends lng.Component {
-    static _template() {
-      const myObject = {
-        [key]: {
-          ...options,
-          ...(typeof value === "function" ? { Child: { type: value } } : []),
-          updated: undefined,
-          mapState: undefined
+      updated(newState, oldState) {
+        if (options.updated) {
+          options.updated(newState, oldState, this);
         }
-      };
-      return myObject;
-    }
+      }
 
-    updated(newState, oldState) {
-      if (options.updated) {
-        options.updated(newState, oldState, this);
+      _init() {
+        if (options.mapState) {
+          const currentState = options.mapState(currentStore.getState());
+          observeStore(
+            currentStore,
+            currentState,
+            options.mapState,
+            (newState, oldState) => this.updated(newState, oldState)
+          );
+        }
       }
     }
-
-    _init() {
-      if (options.mapState) {
-        const currentState = options.mapState(currentStore.getState());
-        observeStore(
-          currentStore,
-          currentState,
-          options.mapState,
-          (newState, oldState) => this.updated(newState, oldState)
-        );
-      }
-    }
-  }
-  return connectedClass;
-};
+    return connectedClass;
+  };
+}
 
 export function connect(
   mapState = defaultMapState,

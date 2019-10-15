@@ -1,11 +1,11 @@
 import "./initializeRedux";
 import MyApp from "./App.js";
+import { connect, provide, initializeConnectedLightning } from "./redux";
+import plugin from "./plugin/babel-transform";
 
-const options = {
-  stage: { w: 1920, h: 1080, clearColor: 0xff000000 },
-  keys: {
-    83: "Search"
-  }
+module.exports = {
+  connect,
+  provide,
+  initializeConnectedLightning,
+  plugin
 };
-const app = new MyApp(options);
-document.body.appendChild(app.stage.getCanvas());

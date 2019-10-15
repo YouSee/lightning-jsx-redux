@@ -1,36 +1,58 @@
-# Installation
+# Lightning-jsx-redux
 
-1. `git clone git@github.com:WebPlatformForEmbedded/Lightning-SDK-blueprint.git {YOUR_APP_NAME}`
-2. `cd {YOUR_APP_NAME}`
-3. `git remote set-url origin {YOUR_REPOSITORY_URL}`
-4. Create a new empty git repo on the specified origin url
-5. Set name and identifier in `metadata.json`.
-6. `git commit -anm "init app"`
-7. `git push origin master`
-8. `npm install`
+This library enables use of jsx syntax with redux connect when developing lightning apps [Lightning framework documentation](https://webplatformforembedded.github.io/Lightning). 
 
-Now please check if you can run index.html (using a web server or your IDE). 
-If it works you're set up and ready to start building your app!
+# Setup
 
-If you don't have a web server installed you could run instant-server from the directory:
 ```
-sudo npm install -g http-server
-http-server -c-1
+npm install lightning-jsx-redux --save-dev 
 ```
 
-# Developing apps
-If you are new to Lightning, please consult the [Lightning framework documentation](https://webplatformforembedded.github.io/Lightning). 
+Add the following to your babelrc config:
+```
+{
+  "plugins": [
+    ["./src/plugin/babel-transform", {
+      "pragma": "document._createConnectedLightningClass"
+    }]
+  ]
+}
+```
 
-When building an app on the Lightning SDK, instead of extending `lng.Application`, extends [`ux.Apps`](https://github.com/WebPlatformForEmbedded/Lightning-SDK/blob/master/js/src/App.js). This brings some additional features such as **automated font loading** and **relative paths**.
+Before your lightning app is initiated you will need to initialize ```lightning-jsx-redux``` library with redux store.
 
-Notice that the SDK provides additional features such as a *mediaplayer* implementation, a generic *video player UI*, generic *keyboard* and some other components. For now please use the *force* and read the [*source*](https://github.com/WebPlatformForEmbedded/Lightning-SDK/tree/master/js/src/tools).
+```
+import { createStore } from "redux";
+import { initializeConnectedLightning, provide } from 'lightning-jsx-redux'
+initializeConnectedLightning()
+export const store = createStore(myReducer);
+provide(store);
+```
 
-# Building app distribution
+Here's an example of a connected jsx component:
 
-Use the following steps to create a distribution:
+```
+import { connect } from 'lightning-jsx-redux'
 
-Create a self-contained web-based distribution (HTML5) in dist/web:
-`npm run release-web`
+const myComponent = (state, actions, mapState) => (
+  <Text
+    x={110}
+    y={110}
+    text={{
+      fontSize: 24,
+      text: state.myState,
+      fontStyle: "bold",
+      textColor: 0xff636efb,
+    }}
+    mapState={mapState}
+    updated={(newState, oldState, self) => {
+      // My update logic
+    }}
+  />
+);
 
-Create a Metrological platform package in dist/{appname}.mpkg.tgz:
-`npm run release-mpkg`
+export default connect(
+  state => ({ myState: state.myState }),
+  { myFunc: value => ({ type: "SOME_ACTION", input: value }) }
+)(myComponent);
+```
