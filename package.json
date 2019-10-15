@@ -1,7 +1,7 @@
 {
   "author": "Rene Gustafson",
   "name": "lightning-jsx-redux",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "prebuild": "npm run clean",
     "build": "cross-env NODE_ENV=production babel src -d dist --copy-files --extensions '.ts' --extensions '.js'",
