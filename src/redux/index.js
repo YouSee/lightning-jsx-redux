@@ -30,8 +30,7 @@ window.createConnectedLightningClass = (key, options, value) => {
 
     updated(newState, oldState) {
       if (options.updated) {
-        const result = options.updated(newState, oldState);
-        this.patch(result);
+        options.updated(newState, oldState, this);
       }
     }
 

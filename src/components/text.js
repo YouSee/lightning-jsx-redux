@@ -1,7 +1,7 @@
 import { connect } from "../redux";
 
 const textComponent = (state, actions, mapState) => (
-  <MyText
+  <MySpecialText
     x={110}
     y={110}
     text={{
@@ -16,19 +16,34 @@ const textComponent = (state, actions, mapState) => (
       shadowBlur: 2
     }}
     mapState={mapState}
-    updated={(newState, oldState) => {
+    updated={(newState, oldState, self) => {
+      if (!self._myAnimation)
+        self._myAnimation = self.tag("MySpecialText").animation({
+          duration: 1, //duration of 1 second
+          repeat: 30, //Plays only once
+          stopMethod: "immediate", //Stops the animation immediately
+          actions: [{ p: "x", v: { 0: 0, 0.25: 50, 0.75: -50, 1: 0 } }]
+        });
       if (newState.currentKey === 75) {
         // keystroke K
-        actions.sendKey("WUUUH! K AS IN KENNETH");
-        return {};
+        self._myAnimation.start();
+        self.patch({
+          MySpecialText: {
+            text: {
+              text: `Wuuuh I'm animating`
+            }
+          }
+        });
+        return;
       }
-      return {
-        MyText: {
+      self._myAnimation.stop();
+      self.patch({
+        MySpecialText: {
           text: {
             text: `new: ${newState.currentKey} old: ${oldState.currentKey}`
           }
         }
-      };
+      });
     }}
   >
     <MyText
@@ -56,7 +71,7 @@ const textComponent = (state, actions, mapState) => (
         };
       }}
     ></MyText>
-  </MyText>
+  </MySpecialText>
 );
 
 export default connect(
