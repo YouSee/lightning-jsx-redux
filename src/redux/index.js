@@ -34,14 +34,25 @@ export function initializeConnectedLightning() {
             ...options,
             ...setChildren(values),
             updated: undefined,
-            mapState: undefined
+            mapState: undefined,
+            propsUpdated: undefined
           }
         };
         return myObject;
       }
 
+      set props(props) {
+        if (
+          options.propsUpdated &&
+          typeof options.propsUpdated === "function"
+        ) {
+          // Parse updated props to function
+          options.propsUpdated(props, this);
+        }
+      }
+
       updated(newState, oldState) {
-        if (options.updated) {
+        if (options.updated && typeof options.updated === "function") {
           options.updated(newState, oldState, this);
         }
       }
