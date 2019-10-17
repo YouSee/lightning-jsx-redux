@@ -13,13 +13,26 @@ export function provide(store) {
 }
 
 export function initializeConnectedLightning() {
-  document._createConnectedLightningClass = (key, options, value) => {
+  document._createConnectedLightningClass = (key, options, ...values) => {
+    const setChildren = values => {
+      if (!values || !values.length) return [];
+      if (values.length === 1)
+        return {
+          Child: { type: values[0] }
+        };
+      const valueTypes = values.map(component => ({
+        type: component
+      }));
+      return {
+        children: valueTypes
+      };
+    };
     class connectedClass extends lng.Component {
       static _template() {
         const myObject = {
           [key]: {
             ...options,
-            ...(typeof value === "function" ? { Child: { type: value } } : []),
+            ...setChildren(values),
             updated: undefined,
             mapState: undefined
           }
