@@ -1,7 +1,7 @@
 {
   "author": "Rene Gustafson",
   "name": "lightning-jsx-redux",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "main": "dist/index.js",
   "scripts": {
     "prebuild": "npm run clean",
