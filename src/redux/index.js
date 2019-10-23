@@ -8,11 +8,7 @@ const defaultMapDispatch = dispatch => ({ dispatch });
 
 export { helpers };
 
-export function provide(store) {
-  currentStore = store;
-}
-
-export function initializeConnectedLightning() {
+function initializeConnectedLightning() {
   document._createConnectedLightningClass = (key, options, ...values) => {
     const setChildren = values => {
       if (!values || !values.length) return [];
@@ -70,6 +66,11 @@ export function initializeConnectedLightning() {
     }
     return connectedClass;
   };
+}
+
+export function provide(store) {
+  initializeConnectedLightning()
+  currentStore = store;
 }
 
 export function connect(

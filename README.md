@@ -12,29 +12,27 @@ Add the following to your babelrc config:
 ```
 {
   "plugins": [
-    ["./src/plugin/babel-transform", {
-      "pragma": "document._createConnectedLightningClass"
-    }]
+    "./src/plugin/babel-transform"
   ]
 }
 ```
 
-Before your lightning app is initiated you will need to initialize ```lightning-jsx-redux``` library with redux store.
+Before your lightning app is initiated you will need to provide ```lightning-jsx-redux``` library with your redux store.
 
-```
+``` javascript
 import { createStore } from "redux";
-import { initializeConnectedLightning, provide } from 'lightning-jsx-redux'
-initializeConnectedLightning()
+import { provide } from 'lightning-jsx-redux'
+
 export const store = createStore(myReducer);
 provide(store);
 ```
 
 Here's an example of a connected jsx component:
 
-```
+``` javascript
 import { connect } from 'lightning-jsx-redux'
 
-const myComponent = (state, actions, mapState) => (
+const myComponent = (state, actions) => (
   <Text
     x={110}
     y={110}
@@ -44,9 +42,16 @@ const myComponent = (state, actions, mapState) => (
       fontStyle: "bold",
       textColor: 0xff636efb,
     }}
-    mapState={mapState}
     updated={(newState, oldState, self) => {
       // My update logic
+      self.patch({
+        text: {
+          text: newState.myState
+        }
+      })
+
+      // Dispatch my redux action
+      actions.myFunc('someValue')
     }}
   />
 );

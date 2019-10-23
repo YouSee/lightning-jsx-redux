@@ -1,9 +1,6 @@
-import { connect, provide, initializeConnectedLightning } from "./redux";
-import plugin from "./plugin/babel-transform";
+import { connect, provide } from "./redux";
 
 module.exports = {
   connect,
-  provide,
-  initializeConnectedLightning,
-  plugin
+  provide
 };
