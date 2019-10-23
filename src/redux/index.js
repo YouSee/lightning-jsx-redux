@@ -30,14 +30,12 @@ export function initializeConnectedLightning() {
     class connectedClass extends lng.Component {
       static _template() {
         const myObject = {
-          [key]: {
-            ...options,
-            ...setChildren(values),
-            updated: undefined,
-            mapState: undefined,
-            propsUpdated: undefined
-          }
+          ...options,
+          ...setChildren(values)
         };
+        delete myObject.updated;
+        delete myObject.propsUpdated;
+        delete myObject.__mapState
         return myObject;
       }
 
@@ -58,12 +56,13 @@ export function initializeConnectedLightning() {
       }
 
       _init() {
-        if (options.mapState) {
-          const currentState = options.mapState(currentStore.getState());
+        console.log(options)
+        if (options.__mapState) {
+          const currentState = options.__mapState(currentStore.getState());
           observeStore(
             currentStore,
             currentState,
-            options.mapState,
+            options.__mapState,
             (newState, oldState) => this.updated(newState, oldState)
           );
         }
@@ -82,7 +81,8 @@ export function connect(
   if (typeof mapState !== "function") {
     mapState = defaultMapState; // eslint-disable-line no-param-reassign
   }
+  Object.defineProperty(mapState, "name", { value: "mapState" });
   return component => {
-    return component(currentState, actions, mapState, mapDispatch);
+    return component(currentState, actions, mapState);
   };
 }
