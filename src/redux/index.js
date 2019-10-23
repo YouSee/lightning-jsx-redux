@@ -52,7 +52,6 @@ function initializeConnectedLightning() {
       }
 
       _init() {
-        console.log(options)
         if (options.__mapState) {
           const currentState = options.__mapState(currentStore.getState());
           observeStore(
