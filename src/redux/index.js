@@ -34,6 +34,7 @@ function initializeConnectedLightning() {
         delete myObject.__mapState
         delete myObject.active
         delete myObject.inactive
+        delete myObject.firstActive
         return myObject;
       }
 
@@ -50,6 +51,12 @@ function initializeConnectedLightning() {
       updated(newState, oldState) {
         if (options.updated && typeof options.updated === "function") {
           options.updated(newState, oldState, this);
+        }
+      }
+
+      _firstActive() {
+        if (options.firstActive && typeof options.firstActive === 'function') {
+          options.firstActive(this._reduxState, this)
         }
       }
 
