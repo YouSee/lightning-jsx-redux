@@ -53,6 +53,9 @@ const myComponent = (state, actions) => (
       // Dispatch my redux action
       actions.myFunc('someValue')
     }}
+    firstActive={(currentState, self) => console.log('First time visible')}
+    active={(currentState, self) => console.log('Visible on screen')}
+    inactive={(currentState, self) => console.log('Not visible on screen')}
   />
 );
 
