@@ -57,10 +57,8 @@ var _default = (0, _helperPluginUtils().declare)((api, options) => {
   api.assertVersion(7);
   const THROW_IF_NAMESPACE =
     options.throwIfNamespace === undefined ? true : !!options.throwIfNamespace;
-  const PRAGMA_DEFAULT = options.pragma || "React.createElement";
-  const PRAGMA_FRAG_DEFAULT = options.pragmaFrag || "React.Fragment";
+  const PRAGMA_DEFAULT = options.pragma || "document._createConnectedLightningClass";
   const JSX_ANNOTATION_REGEX = /\*?\s*@jsx\s+([^\s]+)/;
-  const JSX_FRAG_ANNOTATION_REGEX = /\*?\s*@jsxFrag\s+([^\s]+)/;
 
   const createIdentifierParser = id => () => {
     return id
@@ -89,9 +87,7 @@ var _default = (0, _helperPluginUtils().declare)((api, options) => {
     enter(path, state) {
       const { file } = state;
       let pragma = PRAGMA_DEFAULT;
-      let pragmaFrag = PRAGMA_FRAG_DEFAULT;
       let pragmaSet = !!options.pragma;
-      let pragmaFragSet = !!options.pragmaFrag;
 
       if (file.ast.comments) {
         for (const comment of file.ast.comments) {
@@ -101,21 +97,11 @@ var _default = (0, _helperPluginUtils().declare)((api, options) => {
             pragma = jsxMatches[1];
             pragmaSet = true;
           }
-
-          const jsxFragMatches = JSX_FRAG_ANNOTATION_REGEX.exec(comment.value);
-
-          if (jsxFragMatches) {
-            pragmaFrag = jsxFragMatches[1];
-            pragmaFragSet = true;
-          }
         }
       }
 
       state.set("jsxIdentifier", createIdentifierParser(pragma));
-      state.set("jsxFragIdentifier", createIdentifierParser(pragmaFrag));
-      state.set("usedFragment", false);
       state.set("pragmaSet", pragmaSet);
-      state.set("pragmaFragSet", pragmaFragSet);
     },
 
     exit(path, state) {
@@ -136,6 +122,59 @@ var _default = (0, _helperPluginUtils().declare)((api, options) => {
     if (_core().types.isJSXElement(path.node.value)) {
       path.node.value = _core().types.jsxExpressionContainer(path.node.value);
     }
+  };
+
+  const functionRestParam = _core().types.restElement(
+    _core().types.identifier('rest')
+  )
+  const functionRestAttribute = _core().types.jsxAttribute(
+    _core().types.jsxIdentifier('__mapState'),
+    _core().types.jsxExpressionContainer(
+      _core().types.logicalExpression(
+        '&&',
+        _core().types.logicalExpression(
+          '&&',
+          _core().types.identifier('rest'),
+          _core().types.memberExpression(
+            _core().types.identifier('rest'),
+            _core().types.identifier('length')
+          )
+        ),
+        _core().types.callExpression(
+          _core().types.memberExpression(
+            _core().types.identifier('rest'),
+            _core().types.identifier('find')
+          ),
+          [_core().types.arrowFunctionExpression(
+            [_core().types.identifier('item')],
+            _core().types.binaryExpression(
+              '===',
+              _core().types.memberExpression(
+                _core().types.identifier('item'),
+                _core().types.identifier('name')
+              ),
+              _core().types.stringLiteral('mapState')
+            )
+          )]
+        )
+      )
+    )
+  )
+
+  visitor.JSXOpeningElement = function(path) {
+    const id = _core().types.jsxIdentifier('__mapState');
+
+      const functionParent = path.getFunctionParent();
+      if (!functionParent) return
+      const functionParam = functionParent && functionParent.node && functionParent.node.params && functionParent.node.params.length > 2 && functionParent.node.params[2]
+
+      if (functionParam && functionParam.name === 'mapState')
+        path.node.attributes.push(_core().types.jsxAttribute(id, _core().types.jsxExpressionContainer(functionParam)));
+      else {
+        // Push rest param and attribute
+        functionParent.node.params.push(functionRestParam)
+        path.node.attributes.push(functionRestAttribute)
+      }
   };
 
   return {
