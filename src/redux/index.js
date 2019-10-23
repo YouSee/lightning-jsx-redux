@@ -32,6 +32,8 @@ function initializeConnectedLightning() {
         delete myObject.updated;
         delete myObject.propsUpdated;
         delete myObject.__mapState
+        delete myObject.active
+        delete myObject.inactive
         return myObject;
       }
 
@@ -51,14 +53,30 @@ function initializeConnectedLightning() {
         }
       }
 
+      _active() {
+        if (options.active && typeof options.active === 'function') {
+          options.active(this._reduxState, this)
+        }
+      }
+
+      _inactive() {
+        if (options.inactive && typeof options.inactive === 'function') {
+          options.inactive(this._reduxState, this)
+        }
+      }
+
       _init() {
-        if (options.__mapState) {
+        if (options.__mapState && typeof options.__mapState === 'function') {
           const currentState = options.__mapState(currentStore.getState());
+          this._reduxState = currentState
           observeStore(
             currentStore,
             currentState,
             options.__mapState,
-            (newState, oldState) => this.updated(newState, oldState)
+            (newState, oldState) => {
+              this._reduxState = newState
+              this.updated(newState, oldState)
+            }
           );
         }
       }
