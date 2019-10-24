@@ -43,6 +43,7 @@ function initializeConnectedLightning() {
           options.propsUpdated &&
           typeof options.propsUpdated === "function"
         ) {
+          this._props = props
           // Parse updated props to function
           options.propsUpdated(props, this);
         }
@@ -56,19 +57,19 @@ function initializeConnectedLightning() {
 
       _firstActive() {
         if (options.firstActive && typeof options.firstActive === 'function') {
-          options.firstActive(this._reduxState, this)
+          options.firstActive(this._reduxState, this._props, this)
         }
       }
 
       _active() {
         if (options.active && typeof options.active === 'function') {
-          options.active(this._reduxState, this)
+          options.active(this._reduxState, this._props, this)
         }
       }
 
       _inactive() {
         if (options.inactive && typeof options.inactive === 'function') {
-          options.inactive(this._reduxState, this)
+          options.inactive(this._reduxState, this._props, this)
         }
       }
 
