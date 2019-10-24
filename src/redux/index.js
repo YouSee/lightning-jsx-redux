@@ -35,13 +35,14 @@ function initializeConnectedLightning() {
         delete myObject.active
         delete myObject.inactive
         delete myObject.firstActive
+        delete myObject.pure
         return myObject;
       }
 
       set props(props) {
         this._props = props
-        if (
-          options.propsUpdated &&
+        if (options.pure && !this._isActive) return
+        if (options.propsUpdated &&
           typeof options.propsUpdated === "function"
         ) {
           // Parse updated props to function
@@ -50,24 +51,28 @@ function initializeConnectedLightning() {
       }
 
       updated(newState, oldState) {
+        if (options.pure && !this._isActive) return
         if (options.updated && typeof options.updated === "function") {
           options.updated(newState, oldState, this);
         }
       }
 
       _firstActive() {
+        this._isActive = true
         if (options.firstActive && typeof options.firstActive === 'function') {
           options.firstActive(this._reduxState, this._props, this)
         }
       }
 
       _active() {
+        this._isActive = true
         if (options.active && typeof options.active === 'function') {
           options.active(this._reduxState, this._props, this)
         }
       }
 
       _inactive() {
+        this._isActive = false
         if (options.inactive && typeof options.inactive === 'function') {
           options.inactive(this._reduxState, this._props, this)
         }
