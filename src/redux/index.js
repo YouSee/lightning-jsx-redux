@@ -39,11 +39,11 @@ function initializeConnectedLightning() {
       }
 
       set props(props) {
+        this._props = props
         if (
           options.propsUpdated &&
           typeof options.propsUpdated === "function"
         ) {
-          this._props = props
           // Parse updated props to function
           options.propsUpdated(props, this);
         }
