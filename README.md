@@ -12,7 +12,7 @@ Add the following to your babelrc config:
 ```
 {
   "plugins": [
-    "./src/plugin/babel-transform"
+    "lightning-jsx-redux/babel"
   ]
 }
 ```
@@ -53,9 +53,9 @@ const myComponent = (state, actions) => (
       // Dispatch my redux action
       actions.myFunc('someValue')
     }}
-    firstActive={(currentState, self) => console.log('First time visible')}
-    active={(currentState, self) => console.log('Visible on screen')}
-    inactive={(currentState, self) => console.log('Not visible on screen')}
+    firstActive={(currentState, currentProps, self) => console.log('First time visible')}
+    active={(currentState, currentProps, self) => console.log('Visible on screen')}
+    inactive={(currentState, currentProps, self) => console.log('Not visible on screen')}
   />
 );
 
