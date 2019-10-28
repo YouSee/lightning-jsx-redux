@@ -5,8 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-
-
 function _helperPluginUtils() {
   const data = require("@babel/helper-plugin-utils");
 
@@ -57,7 +55,8 @@ var _default = (0, _helperPluginUtils().declare)((api, options) => {
   api.assertVersion(7);
   const THROW_IF_NAMESPACE =
     options.throwIfNamespace === undefined ? true : !!options.throwIfNamespace;
-  const PRAGMA_DEFAULT = options.pragma || "document._createConnectedLightningClass";
+  const PRAGMA_DEFAULT =
+    options.pragma || "document._createConnectedLightningClass";
   const JSX_ANNOTATION_REGEX = /\*?\s*@jsx\s+([^\s]+)/;
 
   const createIdentifierParser = id => () => {
@@ -125,56 +124,89 @@ var _default = (0, _helperPluginUtils().declare)((api, options) => {
   };
 
   const functionRestParam = _core().types.restElement(
-    _core().types.identifier('rest')
-  )
+    _core().types.identifier("rest")
+  );
   const functionRestAttribute = _core().types.jsxAttribute(
-    _core().types.jsxIdentifier('__mapState'),
+    _core().types.jsxIdentifier("__mapState"),
     _core().types.jsxExpressionContainer(
       _core().types.logicalExpression(
-        '&&',
+        "&&",
         _core().types.logicalExpression(
-          '&&',
-          _core().types.identifier('rest'),
+          "&&",
+          _core().types.identifier("rest"),
           _core().types.memberExpression(
-            _core().types.identifier('rest'),
-            _core().types.identifier('length')
+            _core().types.identifier("rest"),
+            _core().types.identifier("length")
           )
         ),
         _core().types.callExpression(
           _core().types.memberExpression(
-            _core().types.identifier('rest'),
-            _core().types.identifier('find')
+            _core().types.identifier("rest"),
+            _core().types.identifier("find")
           ),
-          [_core().types.arrowFunctionExpression(
-            [_core().types.identifier('item')],
-            _core().types.binaryExpression(
-              '===',
-              _core().types.memberExpression(
-                _core().types.identifier('item'),
-                _core().types.identifier('name')
-              ),
-              _core().types.stringLiteral('mapState')
+          [
+            _core().types.arrowFunctionExpression(
+              [_core().types.identifier("item")],
+              _core().types.binaryExpression(
+                "===",
+                _core().types.memberExpression(
+                  _core().types.identifier("item"),
+                  _core().types.identifier("name")
+                ),
+                _core().types.stringLiteral("mapState")
+              )
             )
-          )]
+          ]
         )
       )
     )
-  )
+  );
 
   visitor.JSXOpeningElement = function(path) {
-    const id = _core().types.jsxIdentifier('__mapState');
+    const id = _core().types.jsxIdentifier("__mapState");
 
-      const functionParent = path.getFunctionParent();
-      if (!functionParent) return
-      const functionParam = functionParent && functionParent.node && functionParent.node.params && functionParent.node.params.length > 2 && functionParent.node.params[2]
+    let functionParent = path.getFunctionParent();
+    if (!functionParent) return;
 
-      if (functionParam && functionParam.name === 'mapState')
-        path.node.attributes.push(_core().types.jsxAttribute(id, _core().types.jsxExpressionContainer(functionParam)));
-      else {
-        // Push rest param and attribute
-        functionParent.node.params.push(functionRestParam)
-        path.node.attributes.push(functionRestAttribute)
-      }
+    // We dont want map functions
+    while (
+      functionParent.parent &&
+      functionParent.parent.callee &&
+      functionParent.parent.callee.property &&
+      functionParent.parent.callee.property.name === "map"
+    ) {
+      let nextParent = functionParent.getFunctionParent();
+      if (!nextParent) return;
+      functionParent = nextParent;
+    }
+
+    const functionParam =
+      functionParent &&
+      functionParent.node &&
+      functionParent.node.params &&
+      functionParent.node.params.length > 2 &&
+      functionParent.node.params[2];
+
+    const hasRestParams =
+      functionParent &&
+      functionParent.node &&
+      functionParent.node.params &&
+      functionParent.node.params.find(
+        item => item && item.type === "RestElement"
+      );
+
+    if (functionParam && functionParam.name === "mapState")
+      path.node.attributes.push(
+        _core().types.jsxAttribute(
+          id,
+          _core().types.jsxExpressionContainer(functionParam)
+        )
+      );
+    else {
+      // Push rest param and attribute
+      if (!hasRestParams) functionParent.node.params.push(functionRestParam);
+      path.node.attributes.push(functionRestAttribute);
+    }
   };
 
   return {
