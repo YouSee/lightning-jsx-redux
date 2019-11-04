@@ -181,11 +181,11 @@ declare namespace Lightning {
     [element: string]: SmoothType;
   }
 
-  declare const ANIMATION_STOP_METHOD_FADE: "fade";
-  declare const ANIMATION_STOP_METHOD_REVERSE: "reverse";
-  declare const ANIMATION_STOP_METHOD_FORWARD: "forward";
-  declare const ANIMATION_STOP_METHOD_IMMEDIATE: "immediate";
-  declare const ANIMATION_STOP_METHOD_ONETOTWO: "onetotwo";
+  const ANIMATION_STOP_METHOD_FADE: "fade";
+  const ANIMATION_STOP_METHOD_REVERSE: "reverse";
+  const ANIMATION_STOP_METHOD_FORWARD: "forward";
+  const ANIMATION_STOP_METHOD_IMMEDIATE: "immediate";
+  const ANIMATION_STOP_METHOD_ONETOTWO: "onetotwo";
 
   type AnimationStopMethod =
     | typeof ANIMATION_STOP_METHOD_FADE
