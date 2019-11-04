@@ -10,8 +10,12 @@ export { helpers };
 
 function initializeConnectedLightning() {
   document._createConnectedLightningClass = (key, options, ...values) => {
-    // JSX tags as function refs
+    if (typeof key === "function" && typeof key.constructor === "function") {
+      // Key is a class, return it as is
+      return key;
+    }
     if (typeof key === "function") {
+      // Key is a function ref
       return key(options);
     }
 
