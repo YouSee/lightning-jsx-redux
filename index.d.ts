@@ -411,7 +411,18 @@ declare namespace Lightning {
 
   type MapState = (state: any) => State;
 
-  type MapDispatch = {};
+  interface Action {
+    [actionProperty: string]: any;
+    type: string;
+  }
+
+  type ActionWithParams = (...args: any[]) => Action;
+
+  interface Dispatch {
+    [dispatchAction: string]: Action | ActionWithParams;
+  }
+
+  type MapDispatch = Dispatch;
 
   type Component = (state: State, actions: Actions) => void;
 
