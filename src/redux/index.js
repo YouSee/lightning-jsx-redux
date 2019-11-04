@@ -10,6 +10,11 @@ export { helpers };
 
 function initializeConnectedLightning() {
   document._createConnectedLightningClass = (key, options, ...values) => {
+    // JSX tags as function refs
+    if (typeof key === "function") {
+      return key(options);
+    }
+
     const mapArrayToLightningClasses = values => {
       return {
         children: values.map(component => ({

@@ -229,6 +229,7 @@ declare namespace Lightning {
     w?: number | LightningWidthFunction;
     h?: number | LightningHeightFunction;
     _id?: string | number;
+    pure?: boolean;
     finalX?: number;
     finalY?: number;
     finalW?: number;

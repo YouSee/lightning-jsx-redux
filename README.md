@@ -1,14 +1,15 @@
 # Lightning-jsx-redux
 
-This library enables use of jsx syntax with redux connect when developing lightning apps [Lightning framework documentation](https://webplatformforembedded.github.io/Lightning). 
+This library enables use of jsx syntax with redux connect when developing lightning apps [Lightning framework documentation](https://webplatformforembedded.github.io/Lightning).
 
 # Setup
 
 ```
-npm install lightning-jsx-redux --save-dev 
+npm install lightning-jsx-redux --save-dev
 ```
 
 Add the following to your babelrc config:
+
 ```
 {
   "plugins": [
@@ -17,11 +18,11 @@ Add the following to your babelrc config:
 }
 ```
 
-Before your lightning app is initiated you will need to provide ```lightning-jsx-redux``` library with your redux store.
+Before your lightning app is initiated you will need to provide `lightning-jsx-redux` library with your redux store.
 
-``` javascript
+```javascript
 import { createStore } from "redux";
-import { provide } from 'lightning-jsx-redux'
+import { provide } from "lightning-jsx-redux";
 
 export const store = createStore(myReducer);
 provide(store);
@@ -29,18 +30,18 @@ provide(store);
 
 Here's an example of a connected jsx component:
 
-``` javascript
-import { connect } from 'lightning-jsx-redux'
+```javascript
+import { connect } from "lightning-jsx-redux";
 
 const myComponent = (state, actions) => (
-  <Text
+  <text
     x={110}
     y={110}
     text={{
       fontSize: 24,
       text: state.myState,
       fontStyle: "bold",
-      textColor: 0xff636efb,
+      textColor: 0xff636efb
     }}
     updated={(newState, oldState, self) => {
       // My update logic
@@ -48,14 +49,20 @@ const myComponent = (state, actions) => (
         text: {
           text: newState.myState
         }
-      })
+      });
 
       // Dispatch my redux action
-      actions.myFunc('someValue')
+      actions.myFunc("someValue");
     }}
-    firstActive={(currentState, currentProps, self) => console.log('First time visible')}
-    active={(currentState, currentProps, self) => console.log('Visible on screen')}
-    inactive={(currentState, currentProps, self) => console.log('Not visible on screen')}
+    firstActive={(currentState, currentProps, self) =>
+      console.log("First time visible")
+    }
+    active={(currentState, currentProps, self) =>
+      console.log("Visible on screen")
+    }
+    inactive={(currentState, currentProps, self) =>
+      console.log("Not visible on screen")
+    }
   />
 );
 

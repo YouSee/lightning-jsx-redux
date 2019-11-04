@@ -73,7 +73,16 @@ var _default = (0, _helperPluginUtils().declare)((api, options) => {
       const tagName = state.tagName;
       const args = state.args;
 
-      args.push(_core().types.stringLiteral(tagName));
+      if (
+        tagName === "view" ||
+        tagName === "text" ||
+        tagName === "rect" ||
+        tagName === "image"
+      ) {
+        args.push(_core().types.stringLiteral(tagName));
+      } else {
+        args.push(state.tagExpr);
+      }
     },
 
     post(state, pass) {
