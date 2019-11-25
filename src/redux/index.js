@@ -51,12 +51,14 @@ function initializeConnectedLightning() {
         delete myObject.inactive;
         delete myObject.firstActive;
         delete myObject.pure;
+        delete myObject.componentWillMount;
+        delete myObject.props;
         return myObject;
       }
 
       set props(props) {
         this._props = props;
-        if (options.pure && !this._isActive) return;
+        if (options.pure && !this.__isActive) return;
         if (
           options.propsUpdated &&
           typeof options.propsUpdated === "function"
@@ -67,46 +69,65 @@ function initializeConnectedLightning() {
       }
 
       updated(newState, oldState) {
-        if (options.pure && !this._isActive) return;
+        if (options.pure && !this.__isActive) return;
         if (options.updated && typeof options.updated === "function") {
           options.updated(newState, oldState, this);
         }
       }
 
       _firstActive() {
-        this._isActive = true;
+        super._firstActive();
+        this.__isActive = true;
         if (options.firstActive && typeof options.firstActive === "function") {
           options.firstActive(this._reduxState, this._props, this);
         }
       }
 
       _active() {
-        this._isActive = true;
+        super._active();
+        this.__isActive = true;
         if (options.active && typeof options.active === "function") {
           options.active(this._reduxState, this._props, this);
         }
       }
 
       _inactive() {
-        this._isActive = false;
+        super._inactive();
+        this.__isActive = false;
         if (options.inactive && typeof options.inactive === "function") {
           options.inactive(this._reduxState, this._props, this);
         }
       }
 
-      _init() {
-        if (options.__mapState && typeof options.__mapState === "function") {
-          const currentState = options.__mapState(currentStore.getState());
+      setMapState(mapState) {
+        if (
+          this._reduxUnsubscribe &&
+          typeof this._reduxUnsubscribe === "function"
+        ) {
+          // Unsubscribe
+          this._reduxUnsubscribe();
+        }
+        if (mapState && typeof mapState === "function") {
+          const currentState = mapState(currentStore.getState());
           this._reduxState = currentState;
-          observeStore(
+          this._reduxUnsubscribe = observeStore(
             currentStore,
             currentState,
-            options.__mapState,
+            mapState,
             (newState, oldState) => {
               this._reduxState = newState;
               this.updated(newState, oldState);
             }
           );
+        }
+      }
+
+      _init() {
+        super._init();
+        this.setMapState(options.__mapState);
+        this.updateMapState = this.setMapState.bind(this);
+        if (options.props) {
+          this._props = options.props;
         }
       }
     }
