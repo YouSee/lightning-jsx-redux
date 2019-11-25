@@ -1,7 +1,7 @@
 {
   "author": "Rene Gustafson",
   "name": "lightning-jsx-redux",
-  "version": "1.0.23",
+  "version": "1.0.24",
   "main": "dist/index.js",
   "types": "index.d.ts",
   "scripts": {
