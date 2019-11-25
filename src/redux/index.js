@@ -53,6 +53,7 @@ function initializeConnectedLightning() {
         delete myObject.pure;
         delete myObject.componentWillMount;
         delete myObject.props;
+        delete myObject.init;
         return myObject;
       }
 
@@ -128,6 +129,9 @@ function initializeConnectedLightning() {
         this.updateMapState = this.setMapState.bind(this);
         if (options.props) {
           this._props = options.props;
+        }
+        if (options.init && typeof options.init === "function") {
+          options.init(this._reduxState, this._props, this);
         }
       }
     }
